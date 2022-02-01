@@ -2,6 +2,8 @@ use cursive::traits::*;
 use cursive::{views::*, traits::Resizable};
 use cursive::Cursive;
 
+
+mod action;
 mod views;
 fn main(){
     let mut siv = cursive::default();
