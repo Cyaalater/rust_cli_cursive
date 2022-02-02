@@ -39,6 +39,11 @@ pub fn register(s: &mut Cursive){
                         ok(s,&username,&password);
                     })
                 )
+                .child(
+                    Button::new("Close",|s| {
+                        s.pop_layer();
+                    })
+                )
         )
     );
 }

@@ -4,6 +4,7 @@ use cursive::Cursive;
 use crate::views::data_view::data;
 use crate::views::login_view::login;
 use crate::views::register_view::register;
+use crate::views::download_view::download;
 use serde::{Deserialize,Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -18,23 +19,8 @@ pub fn build() -> Dialog{
         .child(LinearLayout::horizontal()
             .child(Button::new("Login", login))
             .child(Button::new("Register", register))
-            .child(Button::new("Show data", send))
+            .child(Button::new("Show data", data))
+            .child(Button::new("DEMO",download))
         )
     )
-}
-
-fn send(s: &mut Cursive)
-{
-    let data = RegisterForm {
-        user: String::from("abc"),
-        password: String::from("1234")
-    };
-    let client = reqwest::ClientBuilder::new()
-        .build()
-        .unwrap();
-    let res = client.post(
-        "127.0.0.1:8000/api/register"
-    )
-        .form(&data)
-        .send();
 }

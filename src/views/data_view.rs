@@ -7,7 +7,20 @@ pub fn data(s: &mut Cursive)
 {
     s.add_layer(
         Dialog::around(
-            TextView::new("DATA CONTEXT")
+            LinearLayout::vertical()
+            .child(
+                TextView::new("Current files on the server")
+            )
+            .child(
+                (
+                    TextView::new("CONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\n")
+                )
+            )
+            .child(
+                Button::new("Close",|s| {
+                    s.pop_layer();
+                })
+            )
         )
     )
 }

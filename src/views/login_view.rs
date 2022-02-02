@@ -38,6 +38,9 @@ pub fn login(s: &mut Cursive)
                     ok(s,&user,&password);
 
                 }))
+                .child(Button::new("Close", |s| {
+                    s.pop_layer();
+                }))
         )
     )
 

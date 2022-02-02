@@ -28,3 +28,15 @@ pub fn api_login(name: &str, password: &str) -> Response{
         .expect("Error sending register request")
 
 }
+
+pub fn api_get() -> Response{
+    let client = ClientBuilder::new().build().unwrap();
+    client.get("http://127.0.0.1:8000/api/get").send()
+        .expect("Error sending get request")
+}
+
+pub fn api_download() -> Response{
+    let client = ClientBuilder::new().build().unwrap();
+    client.get("http://127.0.0.1:8000/api/download").send()
+        .expect("Error downloading a file")
+}
