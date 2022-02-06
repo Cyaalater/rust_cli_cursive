@@ -1,4 +1,3 @@
-use std::convert::Infallible;
 // TODO: Will require username and maybe a password and then will return a unique id
 // TODO: The server will create a low level user
 use cursive::traits::*;
@@ -14,19 +13,22 @@ pub fn register(s: &mut Cursive){
             LinearLayout::vertical()
                 .child(
                     LinearLayout::horizontal()
-                        .child(TextView::new("Username"))
                         .child(EditView::new()
                             .with_name("username")
                             .fixed_width(10)
                         )
+                        .child(DummyView)
+                        .child(TextView::new("Username"))
                 )
                 .child(
                     LinearLayout::horizontal()
-                        .child(TextView::new("Password"))
                         .child(EditView::new()
+                            .secret()
                             .with_name("password")
                             .fixed_width(10)
                         )
+                        .child(DummyView)
+                        .child(TextView::new("Password"))
                 )
                 .child(
                     Button::new("Register",|s| {
@@ -52,7 +54,11 @@ pub fn register(s: &mut Cursive){
 fn ok(s: &mut Cursive, name: &str, password: &str)
 {
     let resp = api_register(name,password);
-    cprint(s,resp.text().unwrap());
+    if resp.is_err(){
+        cprint(s,format!("Failed to connect to the server"));
+        return;
+    }
+    cprint(s,resp.unwrap().text().unwrap());
 }
 
 // fn send_form(username: &str, password: &str) -> Result<(),reqwest::Error>

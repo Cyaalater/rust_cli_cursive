@@ -1,5 +1,4 @@
-use cursive::traits::*;
-use cursive::{views::*, traits::Resizable};
+use cursive::views::*;
 use cursive::Cursive;
 
 pub fn cprint(s: &mut Cursive, data: String)

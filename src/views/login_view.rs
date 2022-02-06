@@ -14,15 +14,18 @@ pub fn login(s: &mut Cursive)
                         .with_name("username")
                         .fixed_width(10)
                     )
+                    .child(DummyView)
                     .child(
                         TextView::new("Username")
                     )
                 )
                 .child(LinearLayout::horizontal()
                     .child(EditView::new()
+                        .secret()
                         .with_name("password")
                         .fixed_width(10)
                     )
+                    .child(DummyView)
                     .child(
                         TextView::new("Password")
                     )
@@ -49,6 +52,10 @@ fn ok(s: &mut Cursive, username: &str, password: &str){
     // TODO: Insert into local memory or local storage
     // TODO: Optional: Fetch data like session
     let resp = api_login(username,password);
-    cprint(s,resp.text().unwrap());
+    if resp.is_err(){
+        cprint(s,format!("Failed to connect to the server"));
+        return;
+    }
+    cprint(s,resp.unwrap().text().unwrap());
     // s.pop_layer();
 }

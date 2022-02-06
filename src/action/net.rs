@@ -1,4 +1,5 @@
 use reqwest::blocking::{ClientBuilder, Response};
+// use dotenv::dotenv;
 
 use serde::{Deserialize,Serialize};
 #[derive(Serialize, Deserialize, Debug)]
@@ -7,36 +8,50 @@ struct UserForm{
     password: String
 }
 
-pub fn api_register(name: &str, password: &str) -> Response{
+#[derive(Serialize,Deserialize, Debug)]
+struct File{
+    name: String,
+    description: String,
+    upload_date: String
+}
+
+pub fn api_register(name: &str, password: &str) -> Result<Response,reqwest::Error>{
+    let ip = dotenv::var("IP").unwrap();
+    let port = dotenv::var("PORT").unwrap();
     let data = UserForm {
         user: String::from(name),
         password: String::from(password)
     };
     let client = ClientBuilder::new().build().unwrap();
-    client.post("http://127.0.0.1:8000/api/register").form(&data).send()
-        .expect("Error sending register request")
+    client.post(format!("http://[{}]:{}/api/register",ip,port)).form(&data).send()
+        // .expect("Error sending register request")
 
 }
 
-pub fn api_login(name: &str, password: &str) -> Response{
+pub fn api_login(name: &str, password: &str) -> Result<Response,reqwest::Error>{
+    let ip = dotenv::var("IP").unwrap();
+    let port = dotenv::var("PORT").unwrap();
     let data = UserForm {
         user: String::from(name),
         password: String::from(password)
     };
     let client = ClientBuilder::new().build().unwrap();
-    client.post("http://127.0.0.1:8000/api/login").form(&data).send()
-        .expect("Error sending register request")
+    client.post(format!("http://[{}]:{}/api/login",ip,port)).form(&data).send()
 
 }
 
 pub fn api_get() -> Response{
+    let ip = dotenv::var("IP").unwrap();
+    let port = dotenv::var("PORT").unwrap();
     let client = ClientBuilder::new().build().unwrap();
-    client.get("http://127.0.0.1:8000/api/get").send()
+    client.get(format!("http://[{}]:{}/api/get",ip,port)).send()
         .expect("Error sending get request")
 }
 
 pub fn api_download() -> Response{
+    let ip = dotenv::var("IP").unwrap();
+    let port = dotenv::var("PORT").unwrap();
     let client = ClientBuilder::new().build().unwrap();
-    client.get("http://127.0.0.1:8000/api/download").send()
+    client.get(format!("http://[{}]:{}/api/download",ip,port)).send()
         .expect("Error downloading a file")
 }

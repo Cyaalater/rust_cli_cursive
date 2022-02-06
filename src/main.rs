@@ -1,9 +1,9 @@
-use cursive::traits::*;
-use cursive::{views::*, traits::Resizable};
-use cursive::Cursive;
+// use cursive::traits::*;
+// use cursive::{views::*, traits::Resizable};
+// use cursive::Cursive;
 use dotenv::dotenv;
-use std::env;
-
+// use cursive::theme;
+// use std::env;
 mod action;
 mod views;
 
@@ -11,11 +11,18 @@ mod views;
 extern crate dotenv_codegen;
 fn main(){
     let mut siv = cursive::default();
+    if siv.load_theme_file("theme.toml").is_err()
+    {
+        println!("Theme file not found lol");
+        return;
+    }
     dotenv().ok();
     if dotenv::var("IP").is_err() || dotenv::var("PORT").is_err()
     {
         siv.add_layer(views::config_view::setup())
-    }else{
+    }
+    else
+    {
         siv.add_layer(views::splash::build());
     }
     siv.run();

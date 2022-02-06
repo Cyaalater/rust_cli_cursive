@@ -1,6 +1,5 @@
 // TODO: Fetch the get data from the server which isn't require key
-use cursive::traits::*;
-use cursive::{views::*, traits::Resizable};
+use cursive::views::*;
 use cursive::Cursive;
 
 pub fn data(s: &mut Cursive)
@@ -12,9 +11,7 @@ pub fn data(s: &mut Cursive)
                 TextView::new("Current files on the server")
             )
             .child(
-                (
-                    TextView::new("CONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\n")
-                )
+                TextView::new("CONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\nCONTEXT VIEW\n")
             )
             .child(
                 Button::new("Close",|s| {

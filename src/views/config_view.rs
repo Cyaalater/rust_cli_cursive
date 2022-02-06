@@ -31,7 +31,8 @@ pub fn setup() -> Dialog {
 }
 
 fn ok(s: &mut Cursive, ip: &str, port: &str) {
-    std::fs::write("./.env", format!("IP={}\nPORT={}", ip, port));
+    std::fs::write("./.env", format!("IP={}\nPORT={}", ip, port))
+        .expect("Failed writing .env file");
     s.pop_layer();
     s.add_layer(splash::build());
 }
