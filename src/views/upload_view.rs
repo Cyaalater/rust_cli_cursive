@@ -1,15 +1,21 @@
+use std::cell::{Cell, RefCell};
+use std::rc::Rc;
 use cursive::traits::*;
 use cursive::Cursive;
 use cursive::{traits::Resizable, views::*};
 use crate::views::select_path_view::select_path;
 use crate::views::print::cprint;
-pub fn upload(s: &mut Cursive)
+pub fn upload(s: &mut Cursive,session_id : Rc<RefCell<String>>)
 {
+    let session_id1 = session_id.clone();
     s.add_layer(
         Dialog::around(
             LinearLayout::vertical()
                     .child(
                         LinearLayout::horizontal()
+                            .child(
+                                TextView::new(session_id1.take())
+                            )
                                 .child(
                                 Button::new("Path",|s|{
                                     select_path(s);

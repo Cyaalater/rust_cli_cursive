@@ -1,3 +1,6 @@
+use std::cell::{Cell, RefCell};
+use std::rc::Rc;
+use std::sync::Mutex;
 // use cursive::traits::*;
 // use cursive::{views::*, traits::Resizable};
 // use cursive::Cursive;
@@ -7,9 +10,12 @@ use dotenv::dotenv;
 mod action;
 mod views;
 
+
+
 #[macro_use]
 extern crate dotenv_codegen;
 fn main(){
+    let mut session_id = Rc::new(RefCell::new("".to_string()));
     let mut siv = cursive::default();
     if siv.load_theme_file("theme.toml").is_err()
     {
@@ -19,11 +25,11 @@ fn main(){
     dotenv().ok();
     if dotenv::var("IP").is_err() || dotenv::var("PORT").is_err()
     {
-        siv.add_layer(views::config_view::setup())
+        siv.add_layer(views::config_view::setup(session_id))
     }
     else
     {
-        siv.add_layer(views::splash::build());
+        siv.add_layer(views::splash::build(session_id));
     }
     siv.run();
     
