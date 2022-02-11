@@ -1,7 +1,7 @@
 use cursive::traits::*;
 use cursive::{views::*, traits::Resizable};
 use cursive::Cursive;
-use cursive::theme::{ColorStyle,Color,ColorType,BaseColor};
+use cursive::theme::{ColorStyle,Color,BaseColor};
 use crate::views::download_view::StandardFile;
 
 

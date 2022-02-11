@@ -1,11 +1,11 @@
 use std::path::PathBuf;
-use std::slice::SliceIndex;
+// use std::slice::SliceIndex;
 
-use cursive::traits::*;
+// use cursive::traits::*;
 use cursive::Cursive;
-use cursive::{traits::Resizable, views::*};
+use cursive::views::*;
 
-use super::print::cprint;
+// use super::print::cprint;
 
 pub fn select_path(s: &mut Cursive)
 {

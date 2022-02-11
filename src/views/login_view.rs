@@ -1,10 +1,11 @@
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 use std::rc::Rc;
 use cursive::traits::*;
 use cursive::{views::*, traits::Resizable};
 use cursive::Cursive;
 use crate::action::net::api_login;
 use crate::views::print::cprint;
+use crate::views::splash::logon_splash;
 use serde::{Deserialize,Serialize};
 #[derive(Serialize,Deserialize)]
 struct LoginResult {
@@ -62,6 +63,15 @@ fn ok(s: &mut Cursive, username: &str, password: &str, session_id: Rc<RefCell<St
     // TODO: Insert into local memory or local storage
     // TODO: Optional: Fetch data like session
     let resp = api_login(username,password);
+    s.call_on_name("splash_text", |view: &mut TextView| {
+        view.set_content(format!("Connect as {} on {}","Dayan".to_string(),"Local-server".to_string()))
+    }).unwrap();
+    s.call_on_name("splash", |view: &mut Dialog|{
+        view.clear_buttons()
+    }).unwrap();
+    session_id.replace("LOL123".to_string());
+    logon_splash(s,session_id.clone());
+    s.pop_layer();
     if resp.is_err(){
         cprint(s,format!("Failed to connect to the server"));
         return;
@@ -69,7 +79,12 @@ fn ok(s: &mut Cursive, username: &str, password: &str, session_id: Rc<RefCell<St
     let unwrapped_resp = resp.unwrap();
     // let result_text = unwrapped_resp..text().unwrap();
     let result_struct: LoginResult = unwrapped_resp.json::<LoginResult>().unwrap();
-    // cprint(s,result_text.to_string());
-    session_id.replace(result_struct.session);
-    // s.pop_layer();
+    if result_struct.success{
+        session_id.replace(result_struct.session);
+        s.call_on_name("splash_text", |view: &mut TextView| {
+            view.set_content(format!("Connect as {} on {}","Dayan".to_string(),"Local-server".to_string()))
+        }).unwrap();
+        cprint(s,format!("You are connected to the server"));
+    }
+    
 }
