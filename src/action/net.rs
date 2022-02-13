@@ -21,6 +21,12 @@ struct NewFile{
     description: String
 }
 
+#[derive(Serialize)]
+struct DownloadRequest {
+    file_id : i32,
+    session_id : String
+}
+
 pub fn api_register(name: &str, password: &str) -> Result<Response,reqwest::Error>{
     let ip = dotenv::var("IP").unwrap();
     let port = dotenv::var("PORT").unwrap();
@@ -29,7 +35,7 @@ pub fn api_register(name: &str, password: &str) -> Result<Response,reqwest::Erro
         password: String::from(password)
     };
     let client = ClientBuilder::new().build().unwrap();
-    client.post(format!("http://[{}]:{}/api/register",ip,port)).form(&data).send()
+    client.post(format!("{}/api/register",ipv_format(ip,port))).form(&data).send()
         // .expect("Error sending register request")
 
 }
@@ -42,24 +48,34 @@ pub fn api_login(name: &str, password: &str) -> Result<Response,reqwest::Error>{
         password: String::from(password)
     };
     let client = ClientBuilder::new().build().unwrap();
-    client.post(format!("http://[{}]:{}/api/login",ip,port)).form(&data).send()
+    client.post(format!("{}/api/login",ipv_format(ip,port))).form(&data).send()
 
 }
 
-pub fn api_get() -> Response{
+pub fn api_get(session_id: String) -> Response{
     let ip = dotenv::var("IP").unwrap();
     let port = dotenv::var("PORT").unwrap();
     let client = ClientBuilder::new().build().unwrap();
-    client.get(format!("http://[{}]:{}/api/get",ip,port)).send()
+    client.post(format!("{}/api/get",ipv_format(ip,port)))
+    .body(session_id)
+    .send()
         .expect("Error sending get request")
 }
 
-pub fn api_download() -> Response{
+pub fn api_download(id: i32, session_string: String) -> Response{
     let ip = dotenv::var("IP").unwrap();
     let port = dotenv::var("PORT").unwrap();
+
+    let form = DownloadRequest {
+        file_id: id,
+        session_id: session_string
+    };
+
     let client = ClientBuilder::new().build().unwrap();
-    client.get(format!("http://[{}]:{}/api/download",ip,port)).send()
-        .expect("Error downloading a file")
+    client.post(format!("{}/api/download",ipv_format(ip,port)))
+    .form(&form)
+    .send()
+    .expect("Error downloading a file")
 }
 
 pub fn api_upload(id_string: String, name: String, desc: String, file_path: &std::path::Path)
@@ -73,10 +89,21 @@ pub fn api_upload(id_string: String, name: String, desc: String, file_path: &std
         .text("description",desc)
         .text("session",id_string);
 
-    let resp = client.post(format!("http://[{}]:{}/api/upload",ip,port))
+    let resp = client.post(format!("{}/api/upload",ipv_format(ip,port)))
         .multipart(form)
         .send()
         .unwrap();
 
     
+}
+
+fn ipv_format(ip: String,port: String) -> String
+{
+    let ip_type = dotenv::var("TYPE").unwrap();
+    match ip_type.as_str()
+    {
+        "4" => {return format!("http://{}:{}",ip,port)}
+        "6" => {return format!("http://[{}]:{}",ip,port)}
+        _ => {return "Type not found".to_string()}
+    }
 }

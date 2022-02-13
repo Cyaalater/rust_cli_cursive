@@ -1,32 +1,43 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 // use cursive::traits::*;
 use cursive::Cursive;
 use cursive::{traits::Resizable, views::*};
 use crate::views::select_file_view::select_file;
+use crate::action::net::api_get;
+use serde::{Deserialize,Serialize};
 // use cursive::align::HAlign;
 
+#[derive(Deserialize,Serialize)]
+pub struct StandardResult{
+    success: bool,
+    data: Vec::<StandardFile>
+}
+#[derive(Deserialize,Serialize)]
 pub struct StandardFile{
+    pub id: i32,
     pub name: String,
     pub description: String,
+    pub path: String,
+    pub uploader: String,
     pub date: String
 }
-impl StandardFile{
-    fn new(name : String, desc : String, date : String) -> StandardFile
-    {
-        StandardFile {
-            name,
-            description: desc,
-            date
-        }
-    }
-}
 
 
-pub fn download(s: &mut Cursive)
+
+
+
+
+pub fn download(s: &mut Cursive,session_id: Rc<RefCell<String>>)
 {
-    let files_array = vec![
-        StandardFile::new("Dayan.exe".to_string(), "Going to die lol".to_string(),"2021-1-1".to_string()),
-        StandardFile::new("Amara.db".to_string(), "Nice lmao".to_string(), "2021-1-2".to_string())
-    ];
+    let session_string = session_id.take();
+    session_id.replace(session_string.to_owned());
+    let result = api_get(session_string.clone());
+    let result_struct = result.json::<StandardResult>().unwrap();
+    if !result_struct.success {
+        return;
+    }
+    let files_array = result_struct.data;
     let mut files = SelectView::new();
     for (i,file) in files_array.iter().enumerate() {
         files.add_item(table(file.name.clone(),file.date.clone()),i);
@@ -36,7 +47,7 @@ pub fn download(s: &mut Cursive)
 
     files.set_on_submit(move |s,i|{
 
-        select_file(s,&files_array[i.to_owned()]);
+        select_file(s,&files_array[i.to_owned()],session_string.clone());
     });
 
     s.add_layer(
