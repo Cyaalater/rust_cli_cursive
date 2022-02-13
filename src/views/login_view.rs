@@ -62,16 +62,7 @@ fn ok(s: &mut Cursive, username: &str, password: &str, session_id: Rc<RefCell<St
 
     // TODO: Insert into local memory or local storage
     // TODO: Optional: Fetch data like session
-    let resp = api_login(username,password);
-    s.call_on_name("splash_text", |view: &mut TextView| {
-        view.set_content(format!("Connect as {} on {}","Dayan".to_string(),"Local-server".to_string()))
-    }).unwrap();
-    s.call_on_name("splash", |view: &mut Dialog|{
-        view.clear_buttons()
-    }).unwrap();
-    session_id.replace("LOL123".to_string());
-    logon_splash(s,session_id.clone());
-    s.pop_layer();
+    let resp = api_login(username.clone(),password);
     if resp.is_err(){
         cprint(s,format!("Failed to connect to the server"));
         return;
@@ -80,10 +71,15 @@ fn ok(s: &mut Cursive, username: &str, password: &str, session_id: Rc<RefCell<St
     // let result_text = unwrapped_resp..text().unwrap();
     let result_struct: LoginResult = unwrapped_resp.json::<LoginResult>().unwrap();
     if result_struct.success{
+        s.call_on_name("splash", |view: &mut Dialog|{
+            view.clear_buttons()
+        }).unwrap();
+        s.pop_layer();
         session_id.replace(result_struct.session);
         s.call_on_name("splash_text", |view: &mut TextView| {
-            view.set_content(format!("Connect as {} on {}","Dayan".to_string(),"Local-server".to_string()))
+            view.set_content(format!("Connect as {} on {}",username,"Local-server".to_string()))
         }).unwrap();
+        logon_splash(s,session_id.clone());
         cprint(s,format!("You are connected to the server"));
     }
     

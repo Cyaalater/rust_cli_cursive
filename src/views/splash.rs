@@ -2,10 +2,10 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use cursive::Cursive;
 use cursive::{views::*, traits::{Resizable, Nameable}};
-use crate::views::data_view::data;
+// use crate::views::data_view::data;
 use crate::views::login_view::login;
 use crate::views::register_view::register;
-// use crate::views::download_view::download;
+use crate::views::download_view::download;
 use crate::views::upload_view::upload;
 // use crate::views::select_path_view::select_path;
 // use crate::views::select_file_view::select_file;
@@ -30,8 +30,9 @@ pub fn build(session_id: Rc<RefCell<String>>) -> NamedView<Dialog>{
 pub fn logon_splash(s: &mut Cursive,session_id: Rc<RefCell<String>>)
 {
     s.call_on_name("splash",|view: &mut Dialog| {
+        let session_id1 = session_id.clone();
         view.clear_buttons();
-        view.add_button("Show data", data);
-        view.add_button("DEMO", move |s| {upload(s, session_id.clone())});
+        view.add_button("Show data", move |s| {download(s,session_id.clone())});
+        view.add_button("DEMO", move |s| {upload(s, session_id1.clone())});
     });
 }
